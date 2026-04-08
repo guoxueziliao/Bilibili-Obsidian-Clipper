@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bilibili Obsidian Clipper 设置</title>
+    <link rel="stylesheet" href="./options.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>Bilibili Obsidian Clipper</h1>
+      <p class="desc">配置 Obsidian 写入参数。推荐使用 Local REST API 直写，无系统弹窗。</p>
+
+      <label for="noteFolder">笔记目录（用于自动写入）</label>
+      <input id="noteFolder" type="text" placeholder="例如：Clippings/Bilibili" />
+
+      <label for="obsidianApiBaseUrl">Local REST API 地址</label>
+      <input id="obsidianApiBaseUrl" type="text" placeholder="例如：http://127.0.0.1:27123" />
+
+      <label for="obsidianApiKey">Local REST API Key</label>
+      <input id="obsidianApiKey" type="password" placeholder="填入 Obsidian Local REST API 的 Key" />
+
+      <label for="tags">默认标签（逗号分隔）</label>
+      <input id="tags" type="text" placeholder="例如：clippings,bilibili,subtitle" />
+
+      <label class="checkbox">
+        <input id="includeTimestampInBody" type="checkbox" />
+        在字幕正文中保留时间戳
+      </label>
+
+      <section class="field-group">
+        <h2>笔记属性（Frontmatter）</h2>
+        <p class="hint">勾选需要写入到 Obsidian 属性区的字段。</p>
+        <div class="field-grid">
+          <label class="mini-checkbox"><input type="checkbox" name="frontmatterField" value="title" /> title</label>
+          <label class="mini-checkbox"><input type="checkbox" name="frontmatterField" value="url" /> url</label>
+          <label class="mini-checkbox"><input type="checkbox" name="frontmatterField" value="bvid" /> bvid</label>
+          <label class="mini-checkbox"><input type="checkbox" name="frontmatterField" value="cid" /> cid</label>
+          <label class="mini-checkbox"><input type="checkbox" name="frontmatterField" value="author" /> author</label>
+          <label class="mini-checkbox">
+            <input type="checkbox" name="frontmatterField" value="upload_date" /> upload_date
+          </label>
+          <label class="mini-checkbox">
+            <input type="checkbox" name="frontmatterField" value="subtitle_lang" /> subtitle_lang
+          </label>
+          <label class="mini-checkbox">
+            <input type="checkbox" name="frontmatterField" value="created" /> created
+          </label>
+          <label class="mini-checkbox"><input type="checkbox" name="frontmatterField" value="tags" /> tags</label>
+        </div>
+      </section>
+
+      <button id="saveBtn" type="button">保存设置</button>
+      <p id="status" class="status"></p>
+
+      <section class="help">
+        <h2>使用提示</h2>
+        <ul>
+          <li>推荐安装并启用 Obsidian Local REST API 插件，实现自动写入。</li>
+          <li>不是所有 B 站视频都有字幕，部分视频还需要登录状态。</li>
+        </ul>
+      </section>
+    </main>
+
+    <script src="./options.js"></script>
+  </body>
+</html>
