@@ -671,7 +671,8 @@ async function copyMarkdown() {
   }
 }
 
-function downloadSubtitle() {
+async function downloadSubtitle() {
+  state.settings = await getSettings();
   const format = normalizeDownloadFormat(state.settings?.downloadFormat);
   const content = format === "txt" ? state.txt : state.srt;
   if (!content) {
@@ -680,7 +681,8 @@ function downloadSubtitle() {
   }
 
   const safeTitle = sanitizeFileName(state.title || state.bvid || "bilibili-subtitle");
-  const filename = `${safeTitle}.${state.selectedSubtitleLang || "subtitle"}.${format}`;
+  const langSuffix = sanitizeFileName(state.selectedSubtitleLang || "subtitle") || "subtitle";
+  const filename = `${safeTitle}.${langSuffix}.${format}`;
   const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
   const url = URL.createObjectURL(blob);
 
@@ -696,6 +698,7 @@ function downloadSubtitle() {
 }
 
 async function sendToObsidian() {
+  state.settings = await getSettings();
   if (!state.markdown) {
     setMessage("没有可发送内容，请先刷新抓取。");
     return;
@@ -891,7 +894,7 @@ async function retryAsync(task, retries = 1, delayMs = 180) {
     } catch (error) {
       lastError = error;
       // 如果不是网络错误也不是可重试的业务错误，立即抛出
-      const isNetworkError = getErrorMessage(error, "").includes("请求失败");
+      const isNetworkError = isRetryableNetworkError(error);
       const isRetryable = error?.retryable === true;
       if (!isNetworkError && !isRetryable) {
         throw error;
@@ -909,6 +912,28 @@ async function retryAsync(task, retries = 1, delayMs = 180) {
     }
   }
   throw lastError || new Error("Unknown retry error");
+}
+
+function isRetryableNetworkError(error) {
+  const message = getErrorMessage(error, "").toLowerCase();
+  if (!message) {
+    return false;
+  }
+
+  if (message.includes("http ")) {
+    return true;
+  }
+
+  return (
+    message.includes("请求失败") ||
+    message.includes("failed to fetch") ||
+    message.includes("fetch failed") ||
+    message.includes("networkerror") ||
+    message.includes("net::") ||
+    message.includes("background fetch failed") ||
+    message.includes("timeout") ||
+    message.includes("timed out")
+  );
 }
 
 async function sleep(ms) {

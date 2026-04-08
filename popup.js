@@ -15,6 +15,9 @@ const el = {
 };
 
 let latestPayload = null;
+const DEFAULT_SETTINGS = {
+  downloadFormat: "srt"
+};
 
 init().catch((error) => {
   setStatus(`初始化失败：${error.message}`);
@@ -36,13 +39,18 @@ function bindEvents() {
       setMessage("没有可复制内容，请先刷新。");
       return;
     }
-    await navigator.clipboard.writeText(payload.markdown);
-    setMessage("已复制完整 Markdown。");
+    try {
+      await navigator.clipboard.writeText(payload.markdown);
+      setMessage("已复制完整 Markdown。");
+    } catch (error) {
+      setMessage(`复制失败：${error?.message || "无法访问剪贴板"}`);
+    }
   });
 
   el.downloadBtn.addEventListener("click", async () => {
     const payload = await ensurePayload();
-    const format = normalizeDownloadFormat(payload?.downloadFormat);
+    const settings = await getSettingsFromRuntime();
+    const format = normalizeDownloadFormat(settings?.downloadFormat || payload?.downloadFormat);
     const content =
       format === "txt" ? payload?.txt || payload?.subtitlePreview || "" : payload?.srt || "";
     if (!content) {
@@ -223,4 +231,16 @@ async function sendToRuntime(message) {
       resolve(resp);
     });
   });
+}
+
+async function getSettingsFromRuntime() {
+  try {
+    const resp = await sendToRuntime({ type: "get-settings" });
+    if (!resp?.ok) {
+      return { ...DEFAULT_SETTINGS };
+    }
+    return { ...DEFAULT_SETTINGS, ...(resp.settings || {}) };
+  } catch {
+    return { ...DEFAULT_SETTINGS };
+  }
 }
