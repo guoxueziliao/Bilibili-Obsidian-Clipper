@@ -11,6 +11,10 @@
 - 下载字幕文件（`srt/txt`）
 - 保存到 Obsidian（Local REST API）
 
+## 功能图片演示
+
+![Bilibili Obsidian Clipper 功能演示](docs/images/feature-demo.png)
+
 ## 安装方式
 
 1. 在 GitHub 的 `Releases` 页面下载最新 zip 包
