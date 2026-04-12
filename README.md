@@ -44,3 +44,7 @@
 1. 打开任意 B 站视频页并点击扩展图标
 2. 面板会自动抓取并展示字幕
 3. 按需点击 `刷新 / 复制 / 下载 / 保存到 Obsidian`
+
+## 视频教程
+
+- B 站教程：https://www.bilibili.com/video/BV15qQwB4EZ9/?spm_id_from=333.1387.homepage.video_card.click&vd_source=040bc5ea7866b419558ec2682a2ccb59

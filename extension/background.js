@@ -141,6 +141,56 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     return true;
   }
 
+  if (message.type === "test-obsidian-connection") {
+    const baseUrl = String(message.baseUrl || "").trim();
+    const apiKey = String(message.apiKey || "").trim();
+
+    if (!baseUrl || !apiKey) {
+      sendResponse({ ok: false, error: "缺少 Local REST API 参数" });
+      return false;
+    }
+
+    const endpoint = `${baseUrl.replace(/\/+$/g, "")}/`;
+    fetch(endpoint, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        Accept: "application/json, text/plain, */*"
+      },
+      cache: "no-store"
+    })
+      .then(async (response) => {
+        const bodyText = await response.text().catch(() => "");
+        let data = null;
+        try {
+          data = bodyText ? JSON.parse(bodyText) : null;
+        } catch {
+          data = null;
+        }
+
+        if (!response.ok) {
+          const detail = bodyText ? ` ${bodyText.slice(0, 200)}` : "";
+          sendResponse({ ok: false, error: `HTTP ${response.status}.${detail}` });
+          return;
+        }
+
+        if (data && data.authenticated === false) {
+          sendResponse({ ok: false, error: "API Key 无效或未授权" });
+          return;
+        }
+
+        sendResponse({
+          ok: true,
+          service: typeof data?.service === "string" ? data.service : "Obsidian Local REST API"
+        });
+      })
+      .catch((error) => {
+        sendResponse({ ok: false, error: formatConnectionError(error) });
+      });
+
+    return true;
+  }
+
   return false;
 });
 
@@ -207,4 +257,15 @@ function toString(value) {
 
 function normalizeDownloadFormat(value) {
   return value === "txt" ? "txt" : "srt";
+}
+
+function formatConnectionError(error) {
+  const message = String(error?.message || "").trim();
+  if (!message) {
+    return "连接失败：未知错误";
+  }
+  if (message.includes("Failed to fetch")) {
+    return "无法连接 Local REST API。请检查地址、HTTP/HTTPS 模式和证书信任。";
+  }
+  return message;
 }

@@ -24,9 +24,53 @@ h1 {
   font-size: 26px;
 }
 
-.desc {
-  margin: 10px 0 18px;
-  color: #4b5563;
+.quick-start {
+  margin: 12px 0 16px;
+  border: 1px solid #bfdbfe;
+  background: linear-gradient(180deg, #eff6ff, #f8fbff);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.quick-start-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.quick-start h2 {
+  margin: 0;
+}
+
+.quick-start ol {
+  margin: 0;
+  color: #1f2937;
+}
+
+.quick-links {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  font-size: 13px;
+}
+
+.quick-links span {
+  color: #9ca3af;
+}
+
+.quick-links a {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.quick-links a:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
 }
 
 label {
@@ -46,6 +90,12 @@ select {
   margin-bottom: 12px;
   padding: 0 10px;
   background: #fff;
+}
+
+input.input-error,
+select.input-error {
+  border-color: #dc2626;
+  background: #fff7f7;
 }
 
 .checkbox {
@@ -99,6 +149,20 @@ button {
   cursor: pointer;
 }
 
+.action-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.secondary-btn {
+  background: #eef2ff;
+  color: #1e3a8a;
+  border: 1px solid #c7d2fe;
+  font-weight: 600;
+}
+
 .status {
   min-height: 18px;
   font-size: 14px;
@@ -110,10 +174,46 @@ button {
   color: #b91c1c;
 }
 
-.help {
-  margin-top: 24px;
-  border-top: 1px solid #e5e7eb;
-  padding-top: 14px;
+.about {
+  margin-top: 18px;
+}
+
+.about-card {
+  border: 1px solid #dbeafe;
+  background: linear-gradient(180deg, #f8fbff, #f1f7ff);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.about-row {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 98px minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+}
+
+.about-row + .about-row {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed #dbeafe;
+}
+
+.about-label {
+  color: #4b5563;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.about a {
+  color: #2563eb;
+  text-decoration: none;
+  font-size: 13px;
+  word-break: break-all;
+}
+
+.about a:hover {
+  text-decoration: underline;
 }
 
 h2 {

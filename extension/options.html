@@ -9,7 +9,37 @@
   <body>
     <main class="container">
       <h1>Bilibili Obsidian Clipper</h1>
-      <p class="desc">配置 Obsidian 写入参数。推荐使用 Local REST API 直写，无系统弹窗。</p>
+
+      <section class="quick-start">
+        <div class="quick-start-head">
+          <h2>配置指引</h2>
+          <p class="quick-links">
+            <a
+              href="https://www.bilibili.com/video/BV15qQwB4EZ9/?spm_id_from=333.1387.homepage.video_card.click&vd_source=040bc5ea7866b419558ec2682a2ccb59"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              视频教程
+            </a>
+            <span>·</span>
+            <a
+              href="https://github.com/haixiong1997/Bilibili-Obsidian-Clipper"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              GitHub 仓库地址
+            </a>
+          </p>
+        </div>
+        <ol>
+          <li>在 Obsidian 社区插件市场安装并启用 <strong>Local REST API</strong>。</li>
+          <li>
+            在插件设置中勾选 <strong>Enable Non-encrypted (HTTP) Server</strong>，地址通常为
+            <code>http://127.0.0.1:27123</code>。
+          </li>
+          <li>复制 API Key，回到本页填写“Local REST API 地址”和“Local REST API Key”。</li>
+        </ol>
+      </section>
 
       <label for="noteFolder">笔记目录（用于自动写入）</label>
       <input id="noteFolder" type="text" placeholder="例如：Clippings/Bilibili" />
@@ -19,7 +49,7 @@
 
       <label for="obsidianApiKey">Local REST API Key</label>
       <input id="obsidianApiKey" type="password" placeholder="填入 Obsidian Local REST API 的 Key" />
-      <p class="hint inline-hint">API Key 仅保存在当前浏览器本地，不会通过 Chrome 账号同步。</p>
+      <p class="hint inline-hint">填写完成后，建议先点击下方“测试连接”，确认显示“连接成功”再保存设置。</p>
 
       <label for="tags">默认标签（逗号分隔）</label>
       <input id="tags" type="text" placeholder="例如：clippings,bilibili,subtitle" />
@@ -62,23 +92,42 @@
         </div>
       </section>
 
-      <button id="saveBtn" type="button">保存设置</button>
+      <div class="action-row">
+        <button id="saveBtn" type="button">保存设置</button>
+        <button id="testConnectionBtn" class="secondary-btn" type="button">测试连接</button>
+      </div>
       <p id="status" class="status"></p>
 
-      <section class="help">
-        <h2>使用提示</h2>
-        <ol>
-          <li>
-            打开 Obsidian，进入 <strong>设置 → 第三方插件 → 社区插件市场</strong>，搜索并安装
-            <strong>Obsidian Local REST API</strong>。
-          </li>
-          <li>
-            打开该插件设置，勾选 <strong>Enable Non-encrypted (HTTP) Server</strong>（通常使用
-            <code>http://127.0.0.1:27123</code>）。
-          </li>
-          <li>在同一设置页复制 <strong>API Key</strong>，粘贴到本扩展的“Local REST API Key”输入框。</li>
-          <li>不是所有 B 站视频都有字幕，部分视频还需要登录状态。</li>
-        </ol>
+      <section class="about">
+        <h2>关注作者</h2>
+        <div class="about-card">
+          <p class="about-row">
+            <span class="about-label">项目地址</span>
+            <a
+              href="https://github.com/haixiong1997/Bilibili-Obsidian-Clipper"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              github.com/haixiong1997/Bilibili-Obsidian-Clipper
+            </a>
+          </p>
+          <p class="about-row">
+            <span class="about-label">bilibili</span>
+            <a
+              href="https://space.bilibili.com/243917657?spm_id_from=333.1387.0.0"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              space.bilibili.com/243917657
+            </a>
+          </p>
+          <p class="about-row">
+            <span class="about-label">YouTube</span>
+            <a href="https://www.youtube.com/@chen-r2l" target="_blank" rel="noopener noreferrer">
+              youtube.com/@chen-r2l
+            </a>
+          </p>
+        </div>
       </section>
     </main>
 
