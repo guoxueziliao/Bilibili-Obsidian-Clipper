@@ -17,14 +17,25 @@
 
 ## 安装方式
 
+### Chrome / Edge
+
 1. 在 GitHub 的 `Releases` 页面下载最新 zip 包
 2. 解压到任意本地目录
 3. 打开扩展管理页：
    - Chrome：`chrome://extensions/`
    - Edge：`edge://extensions/`
-4. 开启“开发者模式”
-5. 点击“加载已解压的扩展程序”
+4. 开启"开发者模式"
+5. 点击"加载已解压的扩展程序"
 6. 选择解压后的扩展目录
+
+### Firefox
+
+1. 在 GitHub 的 `Releases` 页面下载最新 zip 包
+2. 解压到任意本地目录
+3. 打开 Firefox 附加组件管理页：`about:addons`
+4. 点击右上角齿轮图标 → "调试附加组件"
+5. 点击"临时加载附加组件..."
+6. 选择解压后的文件夹中的 `manifest.json` 文件
 
 ## 项目结构
 
