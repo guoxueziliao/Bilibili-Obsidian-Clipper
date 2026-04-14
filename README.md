@@ -21,7 +21,7 @@ Chrome 插件市场已上线：[点击访问](https://chromewebstore.google.com/
 
 ### Chrome / Edge
 
-1. 在 GitHub 的 `Releases` 页面下载最新 zip 包
+1. 在 GitHub 的 `Releases` 页面下载最新的 `*-chrome.zip` 包
 2. 解压到任意本地目录
 3. 打开扩展管理页：
    - Chrome：`chrome://extensions/`
@@ -32,7 +32,7 @@ Chrome 插件市场已上线：[点击访问](https://chromewebstore.google.com/
 
 ### Firefox
 
-1. 在 GitHub 的 `Releases` 页面下载最新 zip 包
+1. 在 GitHub 的 `Releases` 页面下载最新的 `*-firefox.zip` 包
 2. 解压到任意本地目录
 3. 打开 Firefox 附加组件管理页：`about:addons`
 4. 点击右上角齿轮图标 → "调试附加组件"
