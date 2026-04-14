@@ -30,6 +30,24 @@ Chrome 插件市场已上线：[点击访问](https://chromewebstore.google.com/
 5. 点击"加载已解压的扩展程序"
 6. 选择解压后的扩展目录
 
+## 发布打包（Chrome / Firefox 双包）
+
+执行：
+
+```bash
+./scripts/build-dual-packages.sh
+```
+
+会自动在 `release/` 目录生成：
+
+- `bilibili-obsidian-clipper-v<version>-chrome.zip`
+- `bilibili-obsidian-clipper-v<version>-firefox.zip`
+
+说明：
+
+- Chrome 包会自动移除 Firefox 专用字段，避免 `background.scripts` 报错。
+- Firefox 包会保留/补齐 `browser_specific_settings.gecko` 与 `background.scripts`。
+
 ### Firefox
 
 1. 在 GitHub 的 `Releases` 页面下载最新 zip 包
