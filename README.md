@@ -1,12 +1,15 @@
 # Bilibili Obsidian Clipper｜一键保存B站字幕
 
-[![Ask Zread](https://img.shields.io/badge/Ask%20Zread-00b0aa?style=flat-square)](https://zread.ai/haixiong1997/Bilibili-Obsidian-Clipper) [![GitHub all releases downloads](https://img.shields.io/github/downloads/haixiong1997/Bilibili-Obsidian-Clipper/total?style=flat-square)](https://github.com/haixiong1997/Bilibili-Obsidian-Clipper/releases)
+> **Fork from** [haixiong1997/Bilibili-Obsidian-Clipper](https://github.com/haixiong1997/Bilibili-Obsidian-Clipper)  
+> 原作者：[haixiong1997](https://github.com/haixiong1997) | 此仓库由 [guoxueziliao](https://github.com/guoxueziliao) 维护
+
+[![GitHub all releases downloads](https://img.shields.io/github/downloads/guoxueziliao/Bilibili-Obsidian-Clipper/total?style=flat-square)](https://github.com/guoxueziliao/Bilibili-Obsidian-Clipper/releases)
 
 推荐官方插件市场下载：[Chrome](https://chromewebstore.google.com/detail/jokophbofiphenlplmohabdcmalcbenl?utm_source=item-share-cb) · [Edge](https://microsoftedge.microsoft.com/addons/detail/fbeeapnjdjgacilaobonekidbfjcmdjo) · [Firefox](https://addons.mozilla.org/addon/bilibili-obsidian-clipper/)
 
 在 B 站视频页抓取字幕，预览后可复制 Markdown、下载字幕文件，并一键写入 Obsidian（Local REST API）。
 
-> 注意：仅支持获取“有字幕轨”的 B 站视频字幕（播放器里有「字幕」选项，通常表示作者上传了外挂字幕或平台提供了 AI 字幕）；没有字幕轨的视频无法获取字幕。
+> 注意：仅支持获取"有字幕轨"的 B 站视频字幕（播放器里有「字幕」选项，通常表示作者上传了外挂字幕或平台提供了 AI 字幕）；没有字幕轨的视频无法获取字幕。
 
 ## 功能
 
@@ -62,3 +65,7 @@
 ## 视频教程
 
 - [B 站教程](https://www.bilibili.com/video/BV15qQwB4EZ9/?spm_id_from=333.1387.homepage.video_card.click&vd_source=040bc5ea7866b419558ec2682a2ccb59)
+
+## 致谢
+
+- 原项目作者 [haixiong1997](https://github.com/haixiong1997)，感谢他开发了这个优秀的工具。
