@@ -2,10 +2,12 @@ const DEFAULT_SETTINGS = {
   noteFolder: "Clippings/Bilibili",
   obsidianApiBaseUrl: "http://127.0.0.1:27123",
   obsidianApiKey: "",
-  tags: "clippings,bilibili",
+  tags: "",
   downloadFormat: "srt",
   includeTimestampInBody: true,
   enableDebugLogs: false,
+  autoAppendVideoTags: true,
+  autoAppendPartitionTag: true,
   frontmatterFields: [
     "title",
     "url",
@@ -40,6 +42,9 @@ const state = {
   selectedSubtitleLang: "",
   subtitleBody: [],
   chapters: [],
+  videoTags: [],
+  partitionTag: "",
+  effectiveTags: "",
   markdown: "",
   srt: "",
   txt: "",
@@ -143,8 +148,19 @@ function bindRuntimeEvents() {
       return true;
     }
 
+    if (message.type === "popup-copy-markdown") {
+      const tags = typeof message.tags === "string" ? message.tags : "";
+      const markdown = tags ? buildMarkdown(state, state.subtitleBody, state.settings, tags) : state.markdown;
+      if (!markdown) {
+        sendResponse({ ok: false, error: "没有可复制的内容，请先刷新抓取。" });
+        return false;
+      }
+      sendResponse({ ok: true, markdown });
+      return false;
+    }
+
     if (message.type === "popup-send-obsidian") {
-      sendToObsidian()
+      sendToObsidian(typeof message.tags === "string" ? message.tags : undefined)
         .then(() => sendResponse({ ok: true, payload: getPopupPayload() }))
         .catch((error) =>
           sendResponse({ ok: false, error: getErrorMessage(error), payload: getPopupPayload() })
@@ -238,6 +254,9 @@ function resetClipState() {
   state.selectedSubtitleLang = "";
   state.subtitleBody = [];
   state.chapters = [];
+  state.videoTags = [];
+  state.partitionTag = "";
+  state.effectiveTags = "";
   state.markdown = "";
   state.srt = "";
   state.txt = "";
@@ -279,6 +298,10 @@ async function refreshClip() {
     state.author = meta.author || readVideoAuthor();
     state.uploadDate = meta.uploadDate || readUploadDate();
     state.description = meta.description || "";
+    state.videoTags = [];
+    const tid = Number(meta.tid || 0);
+    state.partitionTag = PARTITION_MAP[tid] || "";
+
     let resolvedPageIndex = pageIndex;
     if ((meta.pages || []).length > 1 && !hasPageParam) {
       // B 站多分P中，P1 常见为无 ?p= 参数，此时默认按 P1 解析。
@@ -307,14 +330,24 @@ async function refreshClip() {
     });
 
     setStatus("正在获取可用字幕...");
-    let subtitleBundle = await retryAsync(
-      () => fetchSubtitleBundle(state.bvid, state.cid, state.aid),
-      3,
-      500
-    );
+    const [subtitleBundle, videoTagNames] = await Promise.all([
+      retryAsync(
+        () => fetchSubtitleBundle(state.bvid, state.cid, state.aid),
+        3,
+        500
+      ),
+      fetchVideoTags(state.bvid)
+    ]);
     ensureRunActive(runId);
     state.subtitles = normalizeSubtitleTracks(subtitleBundle.tracks);
     state.chapters = normalizeChapters(subtitleBundle.chapters);
+    state.videoTags = videoTagNames;
+    state.effectiveTags = mergeTags(
+      state.settings.tags || DEFAULT_SETTINGS.tags,
+      state.videoTags,
+      state.partitionTag,
+      state.settings
+    );
     logInfo(
       "[BOC] chapters",
       state.chapters.map((item) => ({
@@ -363,14 +396,14 @@ async function refreshClip() {
       }
 
       // Retry because subtitle signed URLs may expire quickly or hit rate limit.
-      subtitleBundle = await retryAsync(
+      const retryBundle = await retryAsync(
         () => fetchSubtitleBundle(state.bvid, state.cid, state.aid),
         2,
         500
       );
       ensureRunActive(runId);
-      state.subtitles = normalizeSubtitleTracks(subtitleBundle.tracks);
-      state.chapters = normalizeChapters(subtitleBundle.chapters);
+      state.subtitles = normalizeSubtitleTracks(retryBundle.tracks);
+      state.chapters = normalizeChapters(retryBundle.chapters);
       const retryPreferred = pickPreferredSubtitle(state.subtitles, {
         previousId: preferred.id,
         previousUrl: preferred.subtitleUrl,
@@ -645,7 +678,7 @@ function getPopupPayload() {
     title: state.title || "",
     author: state.author || "",
     uploadDate: state.uploadDate || "",
-    tags: String(state.settings?.tags || ""),
+    tags: state.effectiveTags || state.settings?.tags || "",
     status: state.statusText || "",
     message: state.messageText || "",
     subtitlePreview: buildSubtitlePreview(state.subtitleBody || [], state.settings || DEFAULT_SETTINGS),
@@ -697,9 +730,12 @@ async function downloadSubtitle() {
   setMessage(`已下载：${filename}`);
 }
 
-async function sendToObsidian() {
+async function sendToObsidian(customTags) {
   state.settings = await getSettings();
-  if (!state.markdown) {
+  const markdown = typeof customTags === "string" && customTags !== state.effectiveTags
+    ? buildMarkdown(state, state.subtitleBody, state.settings, customTags)
+    : state.markdown;
+  if (!markdown) {
     setMessage("没有可发送内容，请先刷新抓取。");
     return;
   }
@@ -716,7 +752,7 @@ async function sendToObsidian() {
   }
 
   try {
-    await writeNoteByLocalApi(baseUrl, apiKey, filepath, state.markdown);
+    await writeNoteByLocalApi(baseUrl, apiKey, filepath, markdown);
     setMessage(`已写入 Obsidian：${filepath}`);
   } catch (error) {
     if (isExtensionContextInvalidated(error)) {
@@ -886,6 +922,70 @@ function isStaleRunError(error) {
   return error?.code === "STALE_RUN";
 }
 
+const PARTITION_MAP = {
+  1: "动画", 24: "MAD·AMV", 25: "MMD·3D", 47: "短片·手书·配音", 86: "特摄", 253: "动漫杂谈", 27: "综合",
+  13: "番剧", 167: "国创",
+  3: "音乐", 28: "原创音乐", 29: "音乐现场", 30: "VOCALOID·UTAU", 31: "翻唱", 130: "音乐综合",
+  193: "MV", 194: "电音", 243: "演奏", 267: "电台",
+  129: "舞蹈", 20: "宅舞", 198: "街舞", 199: "明星舞蹈", 200: "中国舞", 154: "舞蹈综合", 156: "舞蹈教程",
+  4: "游戏", 17: "单机游戏", 171: "电子竞技", 172: "手机游戏", 65: "网络游戏",
+  173: "桌游棋牌", 121: "GMV", 136: "音游", 19: "Mugen",
+  36: "知识", 201: "科学科普", 124: "社科·法律·心理", 228: "人文历史", 207: "财经商业",
+  208: "校园学习", 209: "职业职场", 229: "设计·创意",
+  188: "科技", 95: "数码", 230: "软件应用", 231: "计算机技术", 232: "科工机械", 233: "极客DIY",
+  234: "运动", 235: "篮球", 249: "足球", 164: "健身", 236: "竞技体育", 237: "运动文化", 238: "运动综合",
+  223: "汽车", 245: "汽车生活", 246: "汽车文化", 247: "汽车极客", 248: "智能出行", 240: "购车攻略",
+  160: "生活", 138: "搞笑", 250: "出行", 251: "三农", 239: "家居房产", 161: "手工", 162: "绘画", 163: "日常",
+  211: "美食", 76: "美食制作", 212: "美食侦探", 213: "美食测评", 214: "田园美食", 215: "美食记录",
+  217: "动物圈", 218: "喵星人", 219: "汪星人", 220: "大熊猫", 221: "野生动物", 222: "动物综合",
+  119: "鬼畜", 22: "鬼畜调教", 26: "音MAD", 126: "人力VOCALOID", 127: "鬼畜剧场", 128: "教程演示",
+  155: "时尚", 157: "美妆护肤", 158: "穿搭", 159: "时尚潮流", 152: "仿妆cos",
+  5: "娱乐", 71: "综艺", 241: "娱乐杂谈", 242: "粉丝创作", 137: "明星综合",
+  181: "影视", 182: "影视杂谈", 183: "影视剪辑", 85: "短片", 184: "预告·资讯",
+  177: "纪录片", 23: "电影", 11: "电视剧"
+};
+
+function mergeTags(settingsTags, videoTagNames, partitionTag, settings) {
+  const tags = (settingsTags || "")
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  if (settings.autoAppendVideoTags && Array.isArray(videoTagNames)) {
+    for (const name of videoTagNames) {
+      const tag = String(name).trim();
+      if (tag && !tags.some((t) => t.toLowerCase() === tag.toLowerCase())) {
+        tags.push(tag);
+      }
+    }
+  }
+
+  if (settings.autoAppendPartitionTag) {
+    const partition = String(partitionTag || "").trim();
+    if (partition && !tags.some((t) => t.toLowerCase() === partition.toLowerCase())) {
+      tags.push(partition);
+    }
+  }
+
+  return tags.join(",");
+}
+
+async function fetchVideoTags(bvid) {
+  const url = `https://api.bilibili.com/x/tag/archive/tags?bvid=${encodeURIComponent(bvid)}`;
+  logInfo("[BOC] fetch video tags", { url, bvid });
+  try {
+    const payload = await fetchJson(url);
+    if (payload.code !== 0 || !Array.isArray(payload.data)) {
+      logWarn("[BOC] video tags API returned empty or error", { code: payload.code });
+      return [];
+    }
+    return payload.data.map((item) => String(item.tag_name || "").trim()).filter(Boolean);
+  } catch (error) {
+    logWarn("[BOC] failed to fetch video tags", getErrorMessage(error));
+    return [];
+  }
+}
+
 async function retryAsync(task, retries = 1, delayMs = 180) {
   let lastError = null;
   for (let attempt = 0; attempt <= retries; attempt += 1) {
@@ -959,6 +1059,7 @@ async function fetchVideoMeta(bvid) {
     author: String(data.owner?.name || ""),
     description: String(data.desc || ""),
     uploadDate,
+    tid: Number(data.tid || 0) || 0,
     defaultCid: data.cid ? String(data.cid) : "",
     defaultDuration: Number(data.duration || 0) || 0,
     pages: pages.map((item) => ({
@@ -1524,9 +1625,10 @@ function buildSubtitlePreview(body, settings) {
     .join("\n");
 }
 
-function buildMarkdown(meta, body, settings) {
+function buildMarkdown(meta, body, settings, tagsOverride) {
   const created = new Date().toISOString().slice(0, 10);
-  const tags = (settings.tags || "")
+  const tagsSource = typeof tagsOverride === "string" ? tagsOverride : (meta.effectiveTags || settings.tags || "");
+  const tags = tagsSource
     .split(",")
     .map((item) => item.trim())
     .filter(Boolean);
@@ -1573,15 +1675,15 @@ function buildFrontMatter(meta, settings, created, tagsYaml) {
   }
 
   const fieldLines = {
-    title: `title: "${escapeYaml(meta.title)}"`,
-    url: `url: "${escapeYaml(location.href)}"`,
-    bvid: `bvid: "${escapeYaml(meta.bvid)}"`,
-    cid: `cid: "${escapeYaml(meta.cid)}"`,
-    author: `author: "${escapeYaml(meta.author || "unknown")}"`,
-    upload_date: `upload_date: "${escapeYaml(meta.uploadDate || "unknown")}"`,
-    subtitle_lang: `subtitle_lang: "${escapeYaml(meta.selectedSubtitleLang || "unknown")}"`,
-    created: `created: "${created}"`,
-    tags: `tags: ${tagsYaml}`
+    title: `标题: "${escapeYaml(meta.title)}"`,
+    url: `链接: "${escapeYaml(location.href)}"`,
+    bvid: `BV号: "${escapeYaml(meta.bvid)}"`,
+    cid: `CID: "${escapeYaml(meta.cid)}"`,
+    author: `作者: "${escapeYaml(meta.author || "unknown")}"`,
+    upload_date: `上传日期: "${escapeYaml(meta.uploadDate || "unknown")}"`,
+    subtitle_lang: `字幕语言: "${escapeYaml(meta.selectedSubtitleLang || "unknown")}"`,
+    created: `创建日期: "${created}"`,
+    tags: `标签: ${tagsYaml}`
   };
 
   const lines = enabled.map((field) => fieldLines[field]).filter(Boolean);

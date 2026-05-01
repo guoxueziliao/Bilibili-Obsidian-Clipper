@@ -21,14 +21,6 @@
             >
               视频教程
             </a>
-            <span>·</span>
-            <a
-              href="https://github.com/haixiong1997/Bilibili-Obsidian-Clipper"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              GitHub 仓库地址
-            </a>
           </p>
         </div>
         <ol>
@@ -70,25 +62,29 @@
         启用调试日志（仅在排查问题时开启）
       </label>
 
+      <label class="checkbox">
+        <input id="autoAppendVideoTags" type="checkbox" />
+        自动追加视频标签（抓取 B 站视频已有的标签，如「MV」「流行音乐」）
+      </label>
+
+      <label class="checkbox">
+        <input id="autoAppendPartitionTag" type="checkbox" />
+        自动追加视频分区（根据视频所在分区生成标签，如「音乐」「知识」）
+      </label>
+
       <section class="field-group">
         <h2>笔记属性（Frontmatter）</h2>
         <p class="hint">勾选需要写入到 Obsidian 属性区的字段。</p>
         <div class="field-grid">
-          <label class="mini-checkbox"><input type="checkbox" name="frontmatterField" value="title" /> title</label>
-          <label class="mini-checkbox"><input type="checkbox" name="frontmatterField" value="url" /> url</label>
-          <label class="mini-checkbox"><input type="checkbox" name="frontmatterField" value="bvid" /> bvid</label>
-          <label class="mini-checkbox"><input type="checkbox" name="frontmatterField" value="cid" /> cid</label>
-          <label class="mini-checkbox"><input type="checkbox" name="frontmatterField" value="author" /> author</label>
-          <label class="mini-checkbox">
-            <input type="checkbox" name="frontmatterField" value="upload_date" /> upload_date
-          </label>
-          <label class="mini-checkbox">
-            <input type="checkbox" name="frontmatterField" value="subtitle_lang" /> subtitle_lang
-          </label>
-          <label class="mini-checkbox">
-            <input type="checkbox" name="frontmatterField" value="created" /> created
-          </label>
-          <label class="mini-checkbox"><input type="checkbox" name="frontmatterField" value="tags" /> tags</label>
+          <label class="mini-checkbox"><input type="checkbox" name="frontmatterField" value="title" /> 标题</label>
+          <label class="mini-checkbox"><input type="checkbox" name="frontmatterField" value="url" /> 链接</label>
+          <label class="mini-checkbox"><input type="checkbox" name="frontmatterField" value="bvid" /> BV号</label>
+          <label class="mini-checkbox"><input type="checkbox" name="frontmatterField" value="cid" /> CID</label>
+          <label class="mini-checkbox"><input type="checkbox" name="frontmatterField" value="author" /> 作者</label>
+          <label class="mini-checkbox"><input type="checkbox" name="frontmatterField" value="upload_date" /> 上传日期</label>
+          <label class="mini-checkbox"><input type="checkbox" name="frontmatterField" value="subtitle_lang" /> 字幕语言</label>
+          <label class="mini-checkbox"><input type="checkbox" name="frontmatterField" value="created" /> 创建日期</label>
+          <label class="mini-checkbox"><input type="checkbox" name="frontmatterField" value="tags" /> 标签</label>
         </div>
       </section>
 
@@ -98,39 +94,6 @@
       </div>
       <p id="status" class="status"></p>
 
-      <section class="about">
-        <h2>关注作者</h2>
-        <div class="about-card">
-          <p class="about-row">
-            <span class="about-label">项目地址</span>
-            <a
-              href="https://github.com/haixiong1997/Bilibili-Obsidian-Clipper"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              github.com/haixiong1997/Bilibili-Obsidian-Clipper
-            </a>
-          </p>
-          <p class="about-row">
-            <span class="about-label">bilibili</span>
-            <a
-              href="https://space.bilibili.com/243917657?spm_id_from=333.1387.0.0"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              space.bilibili.com/243917657
-            </a>
-          </p>
-          <p class="about-row">
-            <span class="about-label">YouTube</span>
-            <a href="https://www.youtube.com/@chen-r2l" target="_blank" rel="noopener noreferrer">
-              youtube.com/@chen-r2l
-            </a>
-          </p>
-        </div>
-      </section>
-    </main>
-
-    <script src="./options.js"></script>
+      <script src="./options.js"></script>
   </body>
 </html>

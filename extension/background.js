@@ -1,10 +1,12 @@
 const DEFAULT_SYNC_SETTINGS = {
   noteFolder: "Clippings/Bilibili",
   obsidianApiBaseUrl: "http://127.0.0.1:27123",
-  tags: "clippings,bilibili",
+  tags: "",
   downloadFormat: "srt",
   includeTimestampInBody: true,
   enableDebugLogs: false,
+  autoAppendVideoTags: true,
+  autoAppendPartitionTag: true,
   frontmatterFields: [
     "title",
     "url",

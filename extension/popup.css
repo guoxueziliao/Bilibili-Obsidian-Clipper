@@ -67,13 +67,27 @@ body {
   padding: 7px;
   display: grid;
   gap: 4px;
+  max-height: 166px;
+  overflow-y: auto;
+  flex-shrink: 0;
 }
 
 .prop-row {
   display: grid;
   grid-template-columns: 56px minmax(0, 1fr);
-  align-items: center;
+  align-items: flex-start;
   gap: 6px;
+}
+
+.prop-row .v {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  word-break: break-all;
+}
+
+.prop-row-tags {
+  grid-template-columns: 56px 1fr;
 }
 
 .k {
@@ -87,6 +101,22 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.input-tags {
+  border: 1px solid #cfcfcf;
+  border-radius: 4px;
+  padding: 2px 4px;
+  background: #fff;
+  color: #2f2f2f;
+  font-size: 12px;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: inherit;
+  line-height: 1.4;
+  resize: none;
+  overflow: hidden;
+  field-sizing: content;
 }
 
 .label {

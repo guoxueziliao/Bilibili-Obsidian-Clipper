@@ -2,10 +2,12 @@ const DEFAULT_SETTINGS = {
   noteFolder: "Clippings/Bilibili",
   obsidianApiBaseUrl: "http://127.0.0.1:27123",
   obsidianApiKey: "",
-  tags: "clippings,bilibili",
+  tags: "",
   downloadFormat: "srt",
   includeTimestampInBody: true,
   enableDebugLogs: false,
+  autoAppendVideoTags: true,
+  autoAppendPartitionTag: true,
   frontmatterFields: [
     "title",
     "url",
@@ -27,6 +29,8 @@ const elements = {
   downloadFormat: document.getElementById("downloadFormat"),
   includeTimestampInBody: document.getElementById("includeTimestampInBody"),
   enableDebugLogs: document.getElementById("enableDebugLogs"),
+  autoAppendVideoTags: document.getElementById("autoAppendVideoTags"),
+  autoAppendPartitionTag: document.getElementById("autoAppendPartitionTag"),
   frontmatterFields: document.querySelectorAll('input[name="frontmatterField"]'),
   saveBtn: document.getElementById("saveBtn"),
   testConnectionBtn: document.getElementById("testConnectionBtn"),
@@ -53,6 +57,8 @@ async function loadSettings() {
   elements.downloadFormat.value = normalizeDownloadFormat(settings.downloadFormat);
   elements.includeTimestampInBody.checked = Boolean(settings.includeTimestampInBody);
   elements.enableDebugLogs.checked = Boolean(settings.enableDebugLogs);
+  elements.autoAppendVideoTags.checked = Boolean(settings.autoAppendVideoTags ?? true);
+  elements.autoAppendPartitionTag.checked = Boolean(settings.autoAppendPartitionTag ?? true);
   const selectedFields = new Set(settings.frontmatterFields || DEFAULT_SETTINGS.frontmatterFields);
   elements.frontmatterFields.forEach((checkbox) => {
     checkbox.checked = selectedFields.has(checkbox.value);
@@ -120,6 +126,8 @@ function collectFormPayload() {
     downloadFormat: normalizeDownloadFormat(elements.downloadFormat.value),
     includeTimestampInBody: elements.includeTimestampInBody.checked,
     enableDebugLogs: elements.enableDebugLogs.checked,
+    autoAppendVideoTags: elements.autoAppendVideoTags.checked,
+    autoAppendPartitionTag: elements.autoAppendPartitionTag.checked,
     frontmatterFields: selectedFields
   };
 }

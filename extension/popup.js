@@ -34,13 +34,14 @@ function bindEvents() {
   });
 
   el.copyBtn.addEventListener("click", async () => {
-    const payload = await ensurePayload();
-    if (!payload?.markdown) {
-      setMessage("没有可复制内容，请先刷新。");
+    const currentTags = el.propTags.value.trim();
+    const resp = await sendToContent({ type: "popup-copy-markdown", tags: currentTags });
+    if (!resp?.ok || !resp?.markdown) {
+      setMessage(resp?.error || "没有可复制内容，请先刷新。");
       return;
     }
     try {
-      await navigator.clipboard.writeText(payload.markdown);
+      await navigator.clipboard.writeText(resp.markdown);
       setMessage("已复制完整 Markdown。");
     } catch (error) {
       setMessage(`复制失败：${error?.message || "无法访问剪贴板"}`);
@@ -72,7 +73,10 @@ function bindEvents() {
 
   el.sendBtn.addEventListener("click", async () => {
     setStatus("正在发送到 Obsidian...");
-    const resp = await sendToContent({ type: "popup-send-obsidian" });
+    const resp = await sendToContent({
+      type: "popup-send-obsidian",
+      tags: el.propTags.value.trim()
+    });
     if (!resp?.ok) {
       setMessage(`发送失败：${resp?.error || "未知错误"}`);
     }
@@ -136,7 +140,7 @@ function render(payload) {
   setText(el.propTitle, payload.title || "-");
   setText(el.propUrl, payload.url || "-");
   setText(el.propCreated, new Date().toISOString().slice(0, 10));
-  setText(el.propTags, payload.tags || "clippings");
+  el.propTags.value = payload.tags || "";
   el.propTitle.title = payload.title || "";
   el.propUrl.title = payload.url || "";
 

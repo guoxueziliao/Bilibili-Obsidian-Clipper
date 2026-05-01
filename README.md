@@ -1,71 +1,169 @@
-# Bilibili Obsidian Clipper｜一键保存B站字幕
+<p align="center">
+  <img src="docs/images/cover.png" alt="Cover" width="100%" />
+</p>
 
-> **Fork from** [haixiong1997/Bilibili-Obsidian-Clipper](https://github.com/haixiong1997/Bilibili-Obsidian-Clipper)  
-> 原作者：[haixiong1997](https://github.com/haixiong1997) | 此仓库由 [guoxueziliao](https://github.com/guoxueziliao) 维护
+<h1 align="center">📚 Bilibili Obsidian Clipper</h1>
+<h3 align="center">⚡ 一键捕捉 · 即刻沉淀 ⚡</h3>
 
-[![GitHub all releases downloads](https://img.shields.io/github/downloads/guoxueziliao/Bilibili-Obsidian-Clipper/total?style=flat-square)](https://github.com/guoxueziliao/Bilibili-Obsidian-Clipper/releases)
+<p align="center">
+  <em>将 B 站的流动光影，凝固为你知识星图中永恒的一页。</em>
+</p>
 
-推荐官方插件市场下载：[Chrome](https://chromewebstore.google.com/detail/jokophbofiphenlplmohabdcmalcbenl?utm_source=item-share-cb) · [Edge](https://microsoftedge.microsoft.com/addons/detail/fbeeapnjdjgacilaobonekidbfjcmdjo) · [Firefox](https://addons.mozilla.org/addon/bilibili-obsidian-clipper/)
+<p align="center">
+  <a href="https://chromewebstore.google.com/detail/jokophbofiphenlplmohabdcmalcbenl">
+    <img src="https://img.shields.io/badge/Chrome-Extension-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Chrome" />
+  </a>
+  <a href="https://microsoftedge.microsoft.com/addons/detail/fbeeapnjdjgacilaobonekidbfjcmdjo">
+    <img src="https://img.shields.io/badge/Edge-Extension-0078D7?style=for-the-badge&logo=microsoftedge&logoColor=white" alt="Edge" />
+  </a>
+  <a href="https://addons.mozilla.org/addon/bilibili-obsidian-clipper/">
+    <img src="https://img.shields.io/badge/Firefox-Add--on-FF7139?style=for-the-badge&logo=firefoxbrowser&logoColor=white" alt="Firefox" />
+  </a>
+</p>
 
-在 B 站视频页抓取字幕，预览后可复制 Markdown、下载字幕文件，并一键写入 Obsidian（Local REST API）。
+---
 
-> 注意：仅支持获取"有字幕轨"的 B 站视频字幕（播放器里有「字幕」选项，通常表示作者上传了外挂字幕或平台提供了 AI 字幕）；没有字幕轨的视频无法获取字幕。
+> 🎬 **Fork from** [haixiong1997/Bilibili-Obsidian-Clipper](https://github.com/haixiong1997/Bilibili-Obsidian-Clipper)  
+> 🙏 原作者：[haixiong1997](https://github.com/haixiong1997)
 
-## 功能
+---
 
-- B 站视频字幕抓取（自动识别当前分 P）
-- 字幕预览、复制 Markdown
-- 下载字幕文件（`srt/txt`）
-- 保存到 Obsidian（Local REST API）
+## ✨ 这是什么？
 
-## 功能图片演示
+想象一下——
 
-![Bilibili Obsidian Clipper 功能演示](docs/images/feature-demo-v2.png)
+> *你深夜刷到一个绝妙的教程，30 分钟的知识密度抵得上半本教科书。*
+> *你不想收藏它——收藏等于遗忘。*
+> *你想把它拆解、标注、链接到你已有的知识体系中。*
 
-## 安装方式
+**Bilibili Obsidian Clipper** 就是那座桥。
 
-### Chrome / Edge
+点击一下，视频的完整字幕自动落入你的 Obsidian，连同视频标签、分区、时间戳——一切就绪，只待你提笔批注。
 
-1. 在 GitHub 的 `Releases` 页面下载最新的 `*-chrome.zip` 包
-2. 解压到任意本地目录
-3. 打开扩展管理页：
-   - Chrome：`chrome://extensions/`
-   - Edge：`edge://extensions/`
-4. 开启"开发者模式"
-5. 点击"加载已解压的扩展程序"
-6. 选择解压后的扩展目录
+```
+B 站视频 ──⟐──→ 字幕抓取 ──⟐──→ Markdown ──⟐──→ 你的 Obsidian 知识库
+                         ├── SRT 下载
+                         └── TXT 纯文本
+```
 
-### Firefox
+---
 
-1. 在 GitHub 的 `Releases` 页面下载最新的 `*-firefox.zip` 包
-2. 解压到任意本地目录
-3. 打开 Firefox 附加组件管理页：`about:addons`
-4. 点击右上角齿轮图标 → "调试附加组件"
-5. 点击"临时加载附加组件..."
-6. 选择解压后的文件夹中的 `manifest.json` 文件
+## 🎯 法术列表
 
-## 项目结构
+| 法术 | 效果 |
+|------|------|
+| 🔍 **字幕抓取** | 自动识别当前分 P，抓取全部字幕轨 |
+| 📝 **Markdown 生成** | 带 YAML frontmatter（标题/链接/BV号/标签等） |
+| 🏷️ **智能标签** | 合并视频标签 + 分区 + 自定义，可随意编辑 |
+| 📥 **字幕下载** | 支持 SRT / TXT 格式 |
+| 📡 **一键写入** | 直连 Obsidian Local REST API |
+| ⏱️ **重试机制** | 字幕链接过期自动重试，指数退避 |
 
-- `README.md` / `LICENSE`：项目说明与许可证
-- `extension/`：插件源码（manifest、js、css、icons）
+> ⚠️ 仅支持「有字幕轨」的视频（播放器里有「字幕」选项即为有字幕）。
 
-## Obsidian 配置
+---
 
-1. 在 Obsidian 社区插件市场安装并启用 `Local REST API`
-2. 在插件设置中勾选 `Enable Non-encrypted (HTTP) Server`
-3. 复制插件页面里的 API Key
-4. 在扩展设置页填写 `Local REST API 地址`、`API Key`、`笔记目录`
+## 🎨 预览
 
-## 使用方式
+<p align="center">
+  <img src="docs/images/feature-demo-v2.png" alt="功能演示" width="720" />
+</p>
 
-1. 打开任意 B 站视频页并点击扩展图标
-2. 面板会自动抓取并展示字幕
-3. 按需点击 `刷新 / 复制 / 下载 / 保存到 Obsidian`
+---
 
-## 视频教程
+## 🔧 结界展开仪式
 
-- [B 站教程](https://www.bilibili.com/video/BV15qQwB4EZ9/?spm_id_from=333.1387.homepage.video_card.click&vd_source=040bc5ea7866b419558ec2682a2ccb59)
+### 📦 商店安装（推荐）
 
-## 致谢
+<p align="center">
+  <a href="https://chromewebstore.google.com/detail/jokophbofiphenlplmohabdcmalcbenl">Chrome Web Store</a> ·
+  <a href="https://microsoftedge.microsoft.com/addons/detail/fbeeapnjdjgacilaobonekidbfjcmdjo">Edge Add-ons</a> ·
+  <a href="https://addons.mozilla.org/addon/bilibili-obsidian-clipper/">Firefox Add-ons</a>
+</p>
 
-- 原项目作者 [haixiong1997](https://github.com/haixiong1997)，感谢他开发了这个优秀的工具。
+### 🧪 开发者模式加载
+
+<details>
+<summary><strong>Chrome / Edge</strong></summary>
+
+1. 在 Releases 下载 `*-chrome.zip` 并解压
+2. 打开 `chrome://extensions/`（Edge: `edge://extensions/`）
+3. 开启「开发者模式」
+4. 点击「加载已解压的扩展程序」→ 选择解压目录
+</details>
+
+<details>
+<summary><strong>Firefox</strong></summary>
+
+1. 在 Releases 下载 `*-firefox.zip` 并解压
+2. 打开 `about:debugging` → 「此 Firefox」
+3. 「临时加载附加组件」→ 选择 `manifest.json`
+</details>
+
+---
+
+## 🌐 与 Obsidian 订契
+
+```
+Obsidian 社区插件 → Local REST API → 启用 HTTP → 复制 API Key
+                                                        ↓
+                    扩展设置页 → 填入地址 + Key + 笔记目录 → 契约成立 ✨
+```
+
+| 设置项 | 示例值 |
+|--------|--------|
+| REST API 地址 | `http://127.0.0.1:27123` |
+| API Key | `your-secret-key` |
+| 笔记目录 | `Clippings/Bilibili` |
+| 默认标签 | `学习,知识`（可选） |
+| 自动追加视频标签 | ✅ 推荐开启 |
+| 自动追加视频分区 | ✅ 推荐开启 |
+
+---
+
+## 📐 项目结构
+
+```
+extension/
+├── manifest.json      # 扩展清单
+├── background.js      # 后台服务（API 代理 / 设置管理）
+├── content.js         # 字幕抓取 / 渲染 / 生成
+├── popup.html         # 弹出面板
+├── popup.js           # 面板交互
+├── popup.css          # 面板样式
+├── options.html       # 设置页面
+├── options.js         # 设置逻辑
+├── options.css        # 设置样式
+├── content.css        # 侧边栏样式
+└── icons/             # 图标集
+```
+
+---
+
+## 🎮 快捷指令
+
+```
+① 打开 B 站视频页 → ② 点扩展图标 → ③ 预览编辑标签
+                                          │
+                          ┌───────────────┼───────────────┐
+                          ▼               ▼               ▼
+                       📋 复制        📥 下载字幕      📡 写入 Obsidian
+```
+
+---
+
+## 📺 教程
+
+- [B 站视频教程](https://www.bilibili.com/video/BV15qQwB4EZ9/)
+
+---
+
+## 🙇 致谢
+
+原项目作者 [haixiong1997](https://github.com/haixiong1997)，感谢他打造了连结 B 站与知识管理的月下门扉。
+
+---
+
+<p align="center">
+  <sub>Made with ❤️ and a lot of late-night B站 sessions</sub>
+</p>
